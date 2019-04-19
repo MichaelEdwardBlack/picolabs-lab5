@@ -40,37 +40,35 @@ $(document).ready(function(){
       url: buildQueryURL(config.default_eci, config.temp_store_rid, config.temperature_func),
       dataType: "json",
       success: function(json){
-        //?????????????Implement this function
-
-
-        //HINT $("#currentTemp") GRABS the html tag with id "currentTemp", and may be changed with the .html function. See the JQuery docs for more info
         console.log("Retrieved Current Temperature: ", json);
-        //Remember that your temperatures function returns an entity variable when trying to output the current temperature
-        $("#currentTemp").html("<p>Not implemented</p>");
 
-        //^^^^^^^^^^^^^?????????^^^^^^^^^^^?????????
+        var values = Object.values(json);
+        var temperature = values[values.length-1];
+
+        $("#currentTemp").html(`<p>${temperature}</p>`);
+
       },
       error: function(error){
         console.error("Error retrieving current temperature: ", error);
       }
     });
-  };//end retrieveCurrentTemp Note: you can also us the "retrieveCurrentTemp" to also get your recent temperatures
+  };//end retrieveCurrentTemp Note: you can also use the "retrieveCurrentTemp" to also get your recent temperatures
 
   var setViolationLogs = function(){
     $.ajax({
       url: buildQueryURL(config.default_eci, config.temp_store_rid, config.violation_func),
       dataType: "json",
       success: function(json){
-        //?????????????Implement this function
-
-
-        //HINT $("#violationLogs") GRABS the html tag with id "violationLogs", and may be changed with the .html function. See the JQuery docs for more info
         console.log("Retrived violation logs: ", json);
-        //Remember that your temperatures fucntion returns an entity variable when trying to output the current temperature
-        $("#currentTemp").html("<p>Not implemented</p>");
 
+        var timestamps = Object.keys(json);
+        var temperatures = Object.values(json);
 
-        //^^^^^^^^^^^^^?????????^^^^^^^^^^^?????????
+        for (var i = 0; i < timestamps.length; i++) {
+          var time = timestamps[i];
+          var temp = temperatures[i];
+          $("#violationLogs").html(`<p>${time} : ${temp}</p>`);
+        }
       },
       error: function(error){
         console.error("Error retrieving violation logs: ", error);
