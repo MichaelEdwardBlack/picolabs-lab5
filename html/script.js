@@ -67,7 +67,7 @@ $(document).ready(function(){
         for (var i = 0; i < timestamps.length; i++) {
           var time = timestamps[i];
           var temp = temperatures[i];
-          $("#violationLogs").html(`<p>${time} : ${temp}</p>`);
+          $("#violationLogs").html(`<p>${time}: ${temp}</p>`);
         }
       },
       error: function(error){
