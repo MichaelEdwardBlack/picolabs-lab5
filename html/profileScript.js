@@ -40,19 +40,17 @@ $(document).ready(function(){
       url: buildQueryURL(config.default_eci, config.profile_rid, config.profile_func),
       dataType: 'json',
       success: function(json){
-        //?????????????Modify this function
-
         console.log("Retrieved profile data!", json);
-        let name = "Sir Not Implemented III";
-        let location = "Camelot";
-        let contact = "Messenger Hawk";
-        let threshold = "No Threshold Can Contain Me";
+
+        let name = json['name'];
+        let location = json['location']
+        let contact = json['contact'];
+        let threshold = json['threshold'];
+
         $('#name').html(`<p>${name}</p>`);
         $('#location').html(`<p>${location}</p>`);
         $('#contact').html(`<p>${contact}</p>`);
-        $('#threshold').html(`<p>${jthreshold}F</p>`);
-
-        //^^^^^^^^^^^^^?????????^^^^^^^^^^^?????????
+        $('#threshold').html(`<p>${threshold} F</p>`);
       },
       error: function(error){
         console.error(error);

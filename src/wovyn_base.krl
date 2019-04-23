@@ -9,11 +9,10 @@ ruleset com.blacklite.wovyn_base {
   }
 
   global {
-    temperature_threshold = 82
-
     __testing = {
       "queries":[ {"name": "__testing"} ],
-      "events": [ {"domain": "wovyn", "type": "heartbeat", "attrs": ["genericThing"]} ]
+      "events": [ {"domain": "wovyn", "type": "heartbeat", "attrs": ["genericThing"]},
+                  {"domain": "wovyn", "type": "set_threshold", "attrs": ["new_threshold"]} ]
     }
   }
 
@@ -39,7 +38,27 @@ ruleset com.blacklite.wovyn_base {
         attributes {"timestamp": time, "temperature": temp}
         if (status == "ok")
     }
+  }
 
+  rule set_threshold {
+    select when wovyn set_threshold
+
+    if event:attrs{"new_threshold"} like re#[0-9]*# then send_directive("set_threshold", {"status": "OK"})
+
+    fired {
+      ent:threshold := event:attrs{"new_threshold"}
+    }
+
+  }
+
+  rule guard_threshold {
+    select when wovyn new_temperature_reading
+
+    if ent:threshold.isnull() then noop()
+
+    fired {
+      ent:threshold := 100;
+    }
   }
 
   rule find_high_temps {
@@ -48,7 +67,7 @@ ruleset com.blacklite.wovyn_base {
       time = event:attrs{"timestamp"}
       temp = event:attrs["temperature"]
       tempF = temp[0]{"temperatureF"}
-      violation = (tempF > temperature_threshold) => true | false
+      violation = (tempF > ent:threshold) => true | false
       status = (violation) => "bad" | "good"
     }
 
@@ -62,9 +81,6 @@ ruleset com.blacklite.wovyn_base {
         attributes {"timestamp": time, "temperatureF": tempF}
         if violation
     }
-
-
-
   }
 
   rule threshold_notification {

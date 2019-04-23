@@ -9,6 +9,6 @@ window.config = {
   "temperature_func": "temperatures",
 
   "violation_func": "threshold_violations",
-  "profile_rid": "sensor_profile",
-  "profile_func": "get_all"
+  "profile_rid": "com.blacklite.sensor_profile",
+  "profile_func": "get_profile"
 };
